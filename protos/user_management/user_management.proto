@@ -5,11 +5,11 @@ option go_package = "genproto/user";
 package protos;
 
 service UserManagement {
-    rpc GetUser (ID) returns (User);
+    rpc GetUserByID (ID) returns (User);
     rpc UpdateUser (User) returns (Void);
     rpc DeleteUser (ID) returns (Void);
-    rpc GetProfile (ID) returns (Profile);
-    rpc UpdateProfile (Profile) returns (Void);
+    rpc GetUserProfile (ID) returns (Profile);
+    rpc UpdateUserProfile (Profile) returns (Void);
 }
 
 
