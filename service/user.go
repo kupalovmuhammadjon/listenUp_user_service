@@ -1,15 +1,41 @@
 package service
 
 import (
+	"context"
+	"database/sql"
+	"fmt"
+	pb "user_service/genproto/user"
 	"user_service/storage/postgres"
 )
 
-type Users struct {
+type UserManagement struct {
+	pb.UnimplementedUserManagementServer
 	Users *postgres.UserRepo
 }
 
-func NewUsers(users *postgres.UserRepo) *Users {
-	return &Users{Users: users}
+func NewUserManagement(db *sql.DB) *UserManagement {
+	users := postgres.NewUserRepo(db)
+	return &UserManagement{Users: users}
 }
 
-// func (u *Users) GetUserById(ctx *context.Context, req.)
+func (u *UserManagement) GetUserById(ctx *context.Context, req *pb.ID) (*pb.User, error) {
+	if len(req.Id) != 32 {
+		return nil, fmt.Errorf("id is not valid")
+	}
+	user, err := u.Users.GetUserById(req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (u *UserManagement) GetUserProfile(ctx *context.Context, req *pb.ID) (*pb.Profile, error) {
+	if len(req.Id) != 32 {
+		return nil, fmt.Errorf("id is not valid")
+	}
+	userProfile, err := u.Users.GetUserProfile(req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return userProfile, nil
+}

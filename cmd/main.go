@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
-	"google.golang.org/grpc"
 	"log"
 	"net"
 	"user_service/config"
 	pb "user_service/genproto/user"
+	"user_service/service"
 	"user_service/storage/postgres"
+
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -22,7 +24,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	userService := service.NewUserService(db)
+	userService := service.NewUserManagement(db)
 	s := grpc.NewServer()
 	pb.RegisterUserManagementServer(s, userService)
 	log.Printf("server listening at %v", listener.Addr())
