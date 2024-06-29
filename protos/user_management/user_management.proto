@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option go_package = "genproto/user/";
+
+package protos;
+
+service UserManagement {
+    rpc Get (ID) returns (User);
+    rpc Put (User) returns (Status);
+    rpc Delete (ID) returns (Status);
+    rpc GetProfile (ID) returns (Profile);
+    rpc PutProfile (Profile) returns (Status);
+}
+
+message ID {
+    int32 id = 1;
+}
+
+message Status {
+    string status = 1;
+}
+
+message User {
+    int32 id = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    string created_at = 5;
+    string updated_at = 6;
+}
+
+message Profile {
+    int32 user_id = 1;
+    string full_name = 2;
+    string bio = 3;
+    string role = 4;
+    string location = 5;
+    bytes avatar_image = 6;
+    string website = 7;
+}
