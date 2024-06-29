@@ -10,11 +10,7 @@ import (
 )
 
 type UserRepo struct {
-	DB *sql.DB
-}
-
-func NewUserRepo(db *sql.DB) *UserRepo {
-	return &UserRepo{DB: db}
+	Db *sql.DB
 }
 
 func (u *UserRepo) Put(user *user_management.User) error {
@@ -32,13 +28,15 @@ func (u *UserRepo) Put(user *user_management.User) error {
 	if user.Password != "" {
 		query += fmt.Sprintf("password_hash = $%d, ", len(params)+1)
 	}
-	query += fmt.Sprintf("updated_at = $%d, ", len(params)+1)
+	query += fmt.Sprintf("updated_at = $%d", len(params)+1)
 	params = append(params, time.Now())
+	query += fmt.Sprintf("where id = $%d", len(params)+1)
+	params = append(params, user.Id)
 
-	_, err := u.DB.Exec(query, params...)
+	_, err := u.Db.Exec(query, params...)
 	if err != nil {
 		return errors.Wrap(err, "failed to update user")
 	}
-	
+
 	return nil
 }
