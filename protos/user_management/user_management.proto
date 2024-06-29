@@ -16,7 +16,8 @@ message ID {
     string id = 1;
 }
 
-message Void {}
+message Void {
+}
 
 message User {
     string id = 1;
