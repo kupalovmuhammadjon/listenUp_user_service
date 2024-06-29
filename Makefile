@@ -28,3 +28,6 @@ mig-force:
 		read -p "Enter migration version: " version; \
 	fi; \
 	migrate -database "$(DATABASE_URL)" -path migrations force $$version
+
+permission:
+	@chmod +x scripts/gen-proto.sh
