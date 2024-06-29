@@ -15,7 +15,7 @@ func NewUserRepo(db *sql.DB) *UserRepo {
 	return &UserRepo{Db: db}
 }
 
-func (u *UserRepo) GetUserById(userId int32) (*pb.User, error) {
+func (u *UserRepo) GetUserById(userId string) (*pb.User, error) {
 	query := `select id, username, email, password_hash, 
 	created_at, updated_at from users where id = $1`
 
@@ -45,7 +45,8 @@ func (u *UserRepo) UpdateUserProfile(profile *pb.Profile) error {
 	WHERE 
 	    id = $7;
 `
-	res, err := u.Db.Exec(query, profile.FullName, profile.Bio, profile.Location, profile.AvatarImage, profile.Website)
+	res, err := u.Db.Exec(query, profile.FullName, profile.Bio,
+		profile.Location, profile.AvatarImage, profile.Website)
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
 		return err
