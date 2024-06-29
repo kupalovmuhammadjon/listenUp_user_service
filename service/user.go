@@ -18,7 +18,7 @@ func NewUserManagement(db *sql.DB) *UserManagement {
 	return &UserManagement{Users: users}
 }
 
-func (u *UserManagement) GetUserById(ctx *context.Context, req *pb.ID) (*pb.User, error) {
+func (u *UserManagement) GetUserByID(ctx *context.Context, req *pb.ID) (*pb.User, error) {
 	if len(req.Id) != 32 {
 		return nil, fmt.Errorf("id is not valid")
 	}
@@ -47,7 +47,7 @@ func (u *UserManagement) GetUserProfile(ctx *context.Context, req *pb.ID) (*pb.P
 	return userProfile, nil
 }
 
-func (u *UserManagement) UpdateProfile(ctx context.Context, profile *pb.Profile) (*pb.Void, error) {
+func (u *UserManagement) UpdateUserProfile(ctx context.Context, profile *pb.Profile) (*pb.Void, error) {
 	err := u.Users.UpdateUserProfile(profile)
 	if err != nil {
 		return &pb.Void{}, err
@@ -55,10 +55,20 @@ func (u *UserManagement) UpdateProfile(ctx context.Context, profile *pb.Profile)
 	return &pb.Void{}, nil
 }
 
-func (u *UserManagement) DeleteUser(ctx *context.Context, req *pb.ID) (*pb.Void, error) {
-	if len(req.Id) != 32 {
-		return nil, fmt.Errorf("id is not valid")
+func (u *UserManagement) UpdateUser(ctx context.Context, req *pb.User) (*pb.Void, error) {
+	err := u.Users.UpdateUser(req)
+	if err != nil {
+		return &pb.Void{}, err
 	}
+
+	return &pb.Void{}, nil
+}
+
+func (u *UserManagement) DeleteUser(ctx context.Context, req *pb.ID) (*pb.Void, error) {
 	err := u.Users.DeleteUser(req.Id)
-	return &pb.Void{}, err
+	if err != nil {
+		return &pb.Void{}, err
+	}
+
+	return &pb.Void{}, nil
 }
