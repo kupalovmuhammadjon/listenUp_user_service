@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 CURRENT_DIR := $(shell pwd)
 DATABASE_URL="postgres://postgres:root@localhost:5432/listenup_user_service?sslmode=disable"
 
@@ -31,3 +32,9 @@ mig-force:
 
 permission:
 	@chmod +x scripts/gen-proto.sh
+=======
+CURRENT_DIR=$(shell pwd)
+
+proto-gen:
+	./scripts/gen-proto.sh ${CURRENT_DIR}
+>>>>>>> origin/Ibrohim
