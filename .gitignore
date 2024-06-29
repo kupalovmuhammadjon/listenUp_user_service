@@ -1,4 +1,5 @@
 .env
 Makefile
-.idea
-.vscode
+.idea/
+.vsco
+.sh

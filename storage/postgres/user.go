@@ -4,16 +4,60 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
-	"user_service/genproto/user_management"
-
-	"github.com/pkg/errors"
+	pb "user_service/genproto/user"
 )
 
 type UserRepo struct {
 	Db *sql.DB
 }
 
-func (u *UserRepo) Put(user *user_management.User) error {
+func NewUserRepo(db *sql.DB) *UserRepo {
+	return &UserRepo{Db: db}
+}
+
+func (u *UserRepo) GetUserById(userId int32) (*pb.User, error) {
+	query := `select id, username, email, password_hash, 
+	created_at, updated_at from users where id = $1`
+
+	user := pb.User{Id: userId}
+	err := u.Db.QueryRow(query, userId).Scan(&user.Username,
+		&user.Email, &user.Password, &user.CreatedAt,
+		&user.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (u *UserRepo) UpdateUserProfile(profile *pb.Profile) error {
+	query := `
+	update
+	    user_profiles 
+	set
+    	full_name = $1,
+    	bio = $2,
+   	 	role = $3,
+    	location = $4,
+    	avatar_image = $5,
+    	website = $6,
+	    updated_at = now(),
+	WHERE 
+	    id = $7;
+`
+	res, err := u.Db.Exec(query, profile.FullName, profile.Bio, profile.Location, profile.AvatarImage, profile.Website)
+	affectedRows, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affectedRows == 0 {
+		return fmt.Errorf("user %s not found", profile.UserId)
+	}
+
+	return nil
+}
+
+func (u *UserRepo) UpdateUser(user *pb.User) error {
 	query := "update users set "
 	params := []interface{}{}
 
@@ -35,7 +79,28 @@ func (u *UserRepo) Put(user *user_management.User) error {
 
 	_, err := u.Db.Exec(query, params...)
 	if err != nil {
-		return errors.Wrap(err, "failed to update user")
+		return err
+	}
+
+	return nil
+}
+
+func (u *UserRepo) DeleteUser(id string) error {
+	query := `
+	update
+	    users 
+	set
+	    deleted_at = now(),
+	WHERE 
+	    id = $1;
+`
+	res, err := u.Db.Exec(query, id)
+	affectedRows, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affectedRows == 0 {
+		return fmt.Errorf("user %s not found", id)
 	}
 
 	return nil
