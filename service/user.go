@@ -18,7 +18,7 @@ func NewUserManagement(db *sql.DB) *UserManagement {
 	return &UserManagement{Users: users}
 }
 
-func (u *UserManagement) GetUserByID(ctx *context.Context, req *pb.ID) (*pb.User, error) {
+func (u *UserManagement) GetUserByID(ctx context.Context, req *pb.ID) (*pb.User, error) {
 	if len(req.Id) != 32 {
 		return nil, fmt.Errorf("id is not valid")
 	}
@@ -36,7 +36,7 @@ func (u *UserManagement) GetUserByID(ctx *context.Context, req *pb.ID) (*pb.User
 	}, nil
 }
 
-func (u *UserManagement) GetUserProfile(ctx *context.Context, req *pb.ID) (*pb.Profile, error) {
+func (u *UserManagement) GetUserProfile(ctx context.Context, req *pb.ID) (*pb.Profile, error) {
 	if len(req.Id) != 32 {
 		return nil, fmt.Errorf("id is not valid")
 	}
