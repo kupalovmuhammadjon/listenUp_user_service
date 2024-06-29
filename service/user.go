@@ -36,12 +36,12 @@ func (u *UserManagement) GetUserById(ctx *context.Context, req *pb.ID) (*pb.User
 	}, nil
 }
 
-func (u *UserManagement) UpdateProfile(ctx context.Context, profile *pb.Profile) (*pb.Status, error) {
+func (u *UserManagement) UpdateProfile(ctx context.Context, profile *pb.Profile) (*pb.Void, error) {
 	err := u.Users.UpdateUserProfile(profile)
 	if err != nil {
-		return &pb.Status{Status: "Failed"}, err
+		return &pb.Void{}, err
 	}
-	return &pb.Status{Status: "Success"}, nil
+	return &pb.Void{}, nil
 }
 
 // func (u *Users) GetUserById(ctx *context.Context, req.)

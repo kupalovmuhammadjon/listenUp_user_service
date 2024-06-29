@@ -6,10 +6,10 @@ package protos;
 
 service UserManagement {
     rpc GetUser (ID) returns (User);
-    rpc UpdateUser (User) returns (Status);
-    rpc DeleteUser (ID) returns (Status);
+    rpc UpdateUser (User) returns (Void);
+    rpc DeleteUser (ID) returns (Void);
     rpc GetProfile (ID) returns (Profile);
-    rpc UpdateProfile (Profile) returns (Status);
+    rpc UpdateProfile (Profile) returns (Void);
 }
 
 
@@ -17,8 +17,7 @@ message ID {
     string id = 1;
 }
 
-message Status {
-    string status = 1;
+message Void {
 }
 
 message User {

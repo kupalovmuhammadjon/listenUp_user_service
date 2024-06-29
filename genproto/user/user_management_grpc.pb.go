@@ -23,10 +23,10 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserManagementClient interface {
 	GetUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*User, error)
-	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error)
-	DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Status, error)
+	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*Void, error)
+	DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Void, error)
 	GetProfile(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Profile, error)
-	UpdateProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Status, error)
+	UpdateProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Void, error)
 }
 
 type userManagementClient struct {
@@ -46,8 +46,8 @@ func (c *userManagementClient) GetUser(ctx context.Context, in *ID, opts ...grpc
 	return out, nil
 }
 
-func (c *userManagementClient) UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
+func (c *userManagementClient) UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
 	err := c.cc.Invoke(ctx, "/protos.UserManagement/UpdateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -55,8 +55,8 @@ func (c *userManagementClient) UpdateUser(ctx context.Context, in *User, opts ..
 	return out, nil
 }
 
-func (c *userManagementClient) DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
+func (c *userManagementClient) DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
 	err := c.cc.Invoke(ctx, "/protos.UserManagement/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -73,8 +73,8 @@ func (c *userManagementClient) GetProfile(ctx context.Context, in *ID, opts ...g
 	return out, nil
 }
 
-func (c *userManagementClient) UpdateProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
+func (c *userManagementClient) UpdateProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
 	err := c.cc.Invoke(ctx, "/protos.UserManagement/UpdateProfile", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -87,10 +87,10 @@ func (c *userManagementClient) UpdateProfile(ctx context.Context, in *Profile, o
 // for forward compatibility
 type UserManagementServer interface {
 	GetUser(context.Context, *ID) (*User, error)
-	UpdateUser(context.Context, *User) (*Status, error)
-	DeleteUser(context.Context, *ID) (*Status, error)
+	UpdateUser(context.Context, *User) (*Void, error)
+	DeleteUser(context.Context, *ID) (*Void, error)
 	GetProfile(context.Context, *ID) (*Profile, error)
-	UpdateProfile(context.Context, *Profile) (*Status, error)
+	UpdateProfile(context.Context, *Profile) (*Void, error)
 	mustEmbedUnimplementedUserManagementServer()
 }
 
@@ -101,16 +101,16 @@ type UnimplementedUserManagementServer struct {
 func (UnimplementedUserManagementServer) GetUser(context.Context, *ID) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedUserManagementServer) UpdateUser(context.Context, *User) (*Status, error) {
+func (UnimplementedUserManagementServer) UpdateUser(context.Context, *User) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
-func (UnimplementedUserManagementServer) DeleteUser(context.Context, *ID) (*Status, error) {
+func (UnimplementedUserManagementServer) DeleteUser(context.Context, *ID) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
 func (UnimplementedUserManagementServer) GetProfile(context.Context, *ID) (*Profile, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProfile not implemented")
 }
-func (UnimplementedUserManagementServer) UpdateProfile(context.Context, *Profile) (*Status, error) {
+func (UnimplementedUserManagementServer) UpdateProfile(context.Context, *Profile) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProfile not implemented")
 }
 func (UnimplementedUserManagementServer) mustEmbedUnimplementedUserManagementServer() {}
