@@ -88,7 +88,7 @@ func (u *UserRepo) UpdateUser(user *pb.User) error {
 func (u *UserRepo) DeleteUser(id string) error {
 	query := `
 	update
-	    users 
+	    users (u *UserRepo) 
 	set
 	    deleted_at = now(),
 	WHERE 
@@ -104,4 +104,18 @@ func (u *UserRepo) DeleteUser(id string) error {
 	}
 
 	return nil
+}
+
+func (u *UserRepo) GetUserProfile(id string) (*pb.Profile, error) {
+	query := `select full_name, bio, role, location, avatar_image, website
+	from user_profiles where user_id = $1`
+
+	profile := &pb.Profile{UserId: id}
+	row := u.Db.QueryRow(query, id)
+	err := row.Scan(&profile.FullName, &profile.Bio, &profile.Role, &profile.Location, &profile.AvatarImage, &profile.Website)
+	if err != nil {
+		return nil, err
+	}
+
+	return profile, nil
 }
