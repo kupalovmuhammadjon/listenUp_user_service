@@ -35,6 +35,6 @@ message Profile {
     string bio = 3;
     string role = 4;
     string location = 5;
-    bytes image = 6;
+    bytes avatar_image = 6;
     string website = 7;
 }
