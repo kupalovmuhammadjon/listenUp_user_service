@@ -35,20 +35,20 @@ func (u *UserManagement) GetUserById(ctx *context.Context, req *pb.ID) (*pb.User
   }, nil
 }
 
-func (u *UserManagement) UpdateUser(ctx context.Context, req *pb.User) (*pb.Status, error) {
+func (u *UserManagement) UpdateUser(ctx context.Context, req *pb.User) (*pb.Void, error) {
 	err := u.Users.UpdateUser(req)
 	if err != nil {
-		return &pb.Status{Status: "failed"}, err
+		return &pb.Void{}, err
 	}
 
-	return &pb.Status{Status: "success"}, nil
+	return &pb.Void{}, nil
 }
 
-func (u *UserManagement) DeleteUser(ctx context.Context, req *pb.ID) (*pb.Status, error) {
+func (u *UserManagement) DeleteUser(ctx context.Context, req *pb.ID) (*pb.Void, error) {
 	err := u.Users.DeleteUser(req.Id)
 	if err != nil {
-		return &pb.Status{Status: "failed"}, err
+		return &pb.Void{}, err
 	}
 
-	return &pb.Status{Status: "success"}, nil
+	return &pb.Void{}, nil
 }
