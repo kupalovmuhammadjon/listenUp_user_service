@@ -28,7 +28,7 @@ func (u *UserRepo) Put(user *user_management.User) error {
 	if user.Password != "" {
 		query += fmt.Sprintf("password_hash = $%d, ", len(params)+1)
 	}
-	query += fmt.Sprintf("updated_at = $%d", len(params)+1)
+	query += fmt.Sprintf("updated_at = $%d ", len(params)+1)
 	params = append(params, time.Now())
 	query += fmt.Sprintf("where id = $%d", len(params)+1)
 	params = append(params, user.Id)
