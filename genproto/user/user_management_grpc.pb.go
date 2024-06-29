@@ -22,11 +22,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserManagementClient interface {
-	Get(ctx context.Context, in *ID, opts ...grpc.CallOption) (*User, error)
-	Put(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error)
-	Delete(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Status, error)
+	GetUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*User, error)
+	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error)
+	DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Status, error)
 	GetProfile(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Profile, error)
-	PutProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Status, error)
+	UpdateProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Status, error)
 }
 
 type userManagementClient struct {
@@ -37,27 +37,27 @@ func NewUserManagementClient(cc grpc.ClientConnInterface) UserManagementClient {
 	return &userManagementClient{cc}
 }
 
-func (c *userManagementClient) Get(ctx context.Context, in *ID, opts ...grpc.CallOption) (*User, error) {
+func (c *userManagementClient) GetUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/protos.UserManagement/Get", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protos.UserManagement/GetUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userManagementClient) Put(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error) {
+func (c *userManagementClient) UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error) {
 	out := new(Status)
-	err := c.cc.Invoke(ctx, "/protos.UserManagement/Put", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protos.UserManagement/UpdateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userManagementClient) Delete(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Status, error) {
+func (c *userManagementClient) DeleteUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Status, error) {
 	out := new(Status)
-	err := c.cc.Invoke(ctx, "/protos.UserManagement/Delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protos.UserManagement/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,9 +73,9 @@ func (c *userManagementClient) GetProfile(ctx context.Context, in *ID, opts ...g
 	return out, nil
 }
 
-func (c *userManagementClient) PutProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Status, error) {
+func (c *userManagementClient) UpdateProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Status, error) {
 	out := new(Status)
-	err := c.cc.Invoke(ctx, "/protos.UserManagement/PutProfile", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protos.UserManagement/UpdateProfile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,11 +86,11 @@ func (c *userManagementClient) PutProfile(ctx context.Context, in *Profile, opts
 // All implementations must embed UnimplementedUserManagementServer
 // for forward compatibility
 type UserManagementServer interface {
-	Get(context.Context, *ID) (*User, error)
-	Put(context.Context, *User) (*Status, error)
-	Delete(context.Context, *ID) (*Status, error)
+	GetUser(context.Context, *ID) (*User, error)
+	UpdateUser(context.Context, *User) (*Status, error)
+	DeleteUser(context.Context, *ID) (*Status, error)
 	GetProfile(context.Context, *ID) (*Profile, error)
-	PutProfile(context.Context, *Profile) (*Status, error)
+	UpdateProfile(context.Context, *Profile) (*Status, error)
 	mustEmbedUnimplementedUserManagementServer()
 }
 
@@ -98,20 +98,20 @@ type UserManagementServer interface {
 type UnimplementedUserManagementServer struct {
 }
 
-func (UnimplementedUserManagementServer) Get(context.Context, *ID) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+func (UnimplementedUserManagementServer) GetUser(context.Context, *ID) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedUserManagementServer) Put(context.Context, *User) (*Status, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Put not implemented")
+func (UnimplementedUserManagementServer) UpdateUser(context.Context, *User) (*Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
-func (UnimplementedUserManagementServer) Delete(context.Context, *ID) (*Status, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+func (UnimplementedUserManagementServer) DeleteUser(context.Context, *ID) (*Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
 func (UnimplementedUserManagementServer) GetProfile(context.Context, *ID) (*Profile, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProfile not implemented")
 }
-func (UnimplementedUserManagementServer) PutProfile(context.Context, *Profile) (*Status, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PutProfile not implemented")
+func (UnimplementedUserManagementServer) UpdateProfile(context.Context, *Profile) (*Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProfile not implemented")
 }
 func (UnimplementedUserManagementServer) mustEmbedUnimplementedUserManagementServer() {}
 
@@ -126,56 +126,56 @@ func RegisterUserManagementServer(s grpc.ServiceRegistrar, srv UserManagementSer
 	s.RegisterService(&UserManagement_ServiceDesc, srv)
 }
 
-func _UserManagement_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManagement_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserManagementServer).Get(ctx, in)
+		return srv.(UserManagementServer).GetUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protos.UserManagement/Get",
+		FullMethod: "/protos.UserManagement/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManagementServer).Get(ctx, req.(*ID))
+		return srv.(UserManagementServer).GetUser(ctx, req.(*ID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserManagement_Put_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManagement_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserManagementServer).Put(ctx, in)
+		return srv.(UserManagementServer).UpdateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protos.UserManagement/Put",
+		FullMethod: "/protos.UserManagement/UpdateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManagementServer).Put(ctx, req.(*User))
+		return srv.(UserManagementServer).UpdateUser(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserManagement_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManagement_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserManagementServer).Delete(ctx, in)
+		return srv.(UserManagementServer).DeleteUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protos.UserManagement/Delete",
+		FullMethod: "/protos.UserManagement/DeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManagementServer).Delete(ctx, req.(*ID))
+		return srv.(UserManagementServer).DeleteUser(ctx, req.(*ID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -198,20 +198,20 @@ func _UserManagement_GetProfile_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserManagement_PutProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserManagement_UpdateProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Profile)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserManagementServer).PutProfile(ctx, in)
+		return srv.(UserManagementServer).UpdateProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protos.UserManagement/PutProfile",
+		FullMethod: "/protos.UserManagement/UpdateProfile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserManagementServer).PutProfile(ctx, req.(*Profile))
+		return srv.(UserManagementServer).UpdateProfile(ctx, req.(*Profile))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -224,24 +224,24 @@ var UserManagement_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserManagementServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Get",
-			Handler:    _UserManagement_Get_Handler,
+			MethodName: "GetUser",
+			Handler:    _UserManagement_GetUser_Handler,
 		},
 		{
-			MethodName: "Put",
-			Handler:    _UserManagement_Put_Handler,
+			MethodName: "UpdateUser",
+			Handler:    _UserManagement_UpdateUser_Handler,
 		},
 		{
-			MethodName: "Delete",
-			Handler:    _UserManagement_Delete_Handler,
+			MethodName: "DeleteUser",
+			Handler:    _UserManagement_DeleteUser_Handler,
 		},
 		{
 			MethodName: "GetProfile",
 			Handler:    _UserManagement_GetProfile_Handler,
 		},
 		{
-			MethodName: "PutProfile",
-			Handler:    _UserManagement_PutProfile_Handler,
+			MethodName: "UpdateProfile",
+			Handler:    _UserManagement_UpdateProfile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

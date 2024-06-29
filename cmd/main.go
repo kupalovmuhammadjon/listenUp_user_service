@@ -7,6 +7,7 @@ import (
 	"net"
 	"user_service/config"
 	pb "user_service/genproto/user"
+	"user_service/service"
 	"user_service/storage/postgres"
 )
 
