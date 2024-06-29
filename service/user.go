@@ -39,3 +39,11 @@ func (u *UserManagement) GetUserProfile(ctx *context.Context, req *pb.ID) (*pb.P
 	}
 	return userProfile, nil
 }
+
+func (u *UserManagement) DeleteUser(ctx *context.Context, req *pb.ID) (*pb.Void, error) {
+	if len(req.Id) != 32 {
+		return nil, fmt.Errorf("id is not valid")
+	}
+	err := u.Users.DeleteUser(req.Id)
+	return &pb.Void{}, err
+}
