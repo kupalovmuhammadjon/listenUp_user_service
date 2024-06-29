@@ -36,6 +36,17 @@ func (u *UserManagement) GetUserById(ctx *context.Context, req *pb.ID) (*pb.User
 	}, nil
 }
 
+func (u *UserManagement) GetUserProfile(ctx *context.Context, req *pb.ID) (*pb.Profile, error) {
+	if len(req.Id) != 32 {
+		return nil, fmt.Errorf("id is not valid")
+	}
+	userProfile, err := u.Users.GetUserProfile(req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return userProfile, nil
+}
+
 func (u *UserManagement) UpdateProfile(ctx context.Context, profile *pb.Profile) (*pb.Void, error) {
 	err := u.Users.UpdateUserProfile(profile)
 	if err != nil {
@@ -44,4 +55,10 @@ func (u *UserManagement) UpdateProfile(ctx context.Context, profile *pb.Profile)
 	return &pb.Void{}, nil
 }
 
-// func (u *Users) GetUserById(ctx *context.Context, req.)
+func (u *UserManagement) DeleteUser(ctx *context.Context, req *pb.ID) (*pb.Void, error) {
+	if len(req.Id) != 32 {
+		return nil, fmt.Errorf("id is not valid")
+	}
+	err := u.Users.DeleteUser(req.Id)
+	return &pb.Void{}, err
+}
