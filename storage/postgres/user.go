@@ -3,7 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-	pbu "user_service/genproto/user"
+	pb "user_service/genproto/user"
 )
 
 type UserRepo struct {
@@ -14,28 +14,22 @@ func NewUserRepo(db *sql.DB) *UserRepo {
 	return &UserRepo{Db: db}
 }
 
-func (u *UserRepo) DeleteUser(id string) error {
-	query := `
-	update
-	    users 
-	set
-	    deleted_at = now(),
-	WHERE 
-	    id = $1;
-`
-	res, err := u.Db.Exec(query, id)
-	affectedRows, err := res.RowsAffected()
+func (u *UserRepo) GetUserById(userId int32) (*pb.User, error) {
+	query := `select id, username, email, password_hash, 
+	created_at, updated_at from users where id = $1`
+
+	user := pb.User{Id: userId}
+	err := u.Db.QueryRow(query, userId).Scan(&user.Username,
+		&user.Email, &user.Password, &user.CreatedAt,
+		&user.UpdatedAt)
 	if err != nil {
-		return err
-	}
-	if affectedRows == 0 {
-		return fmt.Errorf("user %s not found", id)
+		return nil, err
 	}
 
-	return nil
+	return &user, nil
 }
 
-func (u *UserRepo) UpdateUserProfile(profile pbu.Profile) error {
+func (u *UserRepo) UpdateUserProfile(profile pb.Profile) error {
 	query := `
 	update
 	    user_profiles 
@@ -57,6 +51,27 @@ func (u *UserRepo) UpdateUserProfile(profile pbu.Profile) error {
 	}
 	if affectedRows == 0 {
 		return fmt.Errorf("user %s not found", profile.UserId)
+	}
+
+	return nil
+}
+
+func (u *UserRepo) DeleteUser(id string) error {
+	query := `
+	update
+	    users 
+	set
+	    deleted_at = now(),
+	WHERE 
+	    id = $1;
+`
+	res, err := u.Db.Exec(query, id)
+	affectedRows, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affectedRows == 0 {
+		return fmt.Errorf("user %s not found", id)
 	}
 
 	return nil
