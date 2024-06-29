@@ -4,6 +4,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/spf13/cast"
 	"log"
+	"os"
 )
 
 type Config struct {
@@ -23,12 +24,20 @@ func Load() *Config {
 
 	config := &Config{}
 
-	config.HTTP_PORT = cast.ToString("HTTP_PORT")
-	config.DB_HOST = cast.ToString("DB_HOST")
-	config.DB_PORT = cast.ToString("DB_PORT")
-	config.DB_USER = cast.ToString("DB_USER")
-	config.DB_PASSWORD = cast.ToString("DB_PASSWORD")
-	config.DB_NAME = cast.ToString("DB_NAME")
+	config.HTTP_PORT = cast.ToString(coalesce("HTTP_PORT", 8080))
+	config.DB_HOST = cast.ToString(coalesce("DB_HOST", "localhost"))
+	config.DB_PORT = cast.ToString(coalesce("DB_PORT", 5432))
+	config.DB_USER = cast.ToString(coalesce("DB_USER", "postgres"))
+	config.DB_PASSWORD = cast.ToString(coalesce("DB_PASSWORD", "root"))
+	config.DB_NAME = cast.ToString(coalesce("DB_NAME", "back_up"))
 
 	return config
+}
+
+func coalesce(key string, value interface{}) interface{} {
+	val, exists := os.LookupEnv(key)
+	if exists {
+		return val
+	}
+	return value
 }
