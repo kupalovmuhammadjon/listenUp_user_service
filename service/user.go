@@ -16,6 +16,15 @@ type UserManagement struct {
 func NewUserManagement(db *sql.DB) *UserManagement {
 	users := postgres.NewUserRepo(db)
 	return &UserManagement{Users: users}
+
+}
+
+func (u *UserManagement) UpdateProfile(ctx context.Context, profile *pb.Profile) (*pb.Void, error) {
+	err := u.Users.UpdateUserProfile(profile)
+	if err != nil {
+		return &pb.Void{}, err
+	}
+	return &pb.Void{}, nil
 }
 
 func (u *UserManagement) GetUserById(ctx *context.Context, req *pb.ID) (*pb.User, error) {
