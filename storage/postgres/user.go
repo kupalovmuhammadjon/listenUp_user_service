@@ -47,6 +47,10 @@ func (u *UserRepo) UpdateUserProfile(profile *pb.Profile) error {
 `
 	res, err := u.Db.Exec(query, profile.FullName, profile.Bio,
 		profile.Location, profile.AvatarImage, profile.Website)
+	if err != nil {
+		return err
+	}
+
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
 		return err
@@ -96,10 +100,15 @@ func (u *UserRepo) DeleteUser(id string) error {
 	    id = $1;
 `
 	res, err := u.Db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
 		return err
 	}
+
 	if affectedRows == 0 {
 		return fmt.Errorf("user %s not found", id)
 	}

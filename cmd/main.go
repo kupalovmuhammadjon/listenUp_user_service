@@ -26,7 +26,7 @@ func main() {
 
 	userService := service.NewUserManagement(db)
 	s := grpc.NewServer()
-	pb.RegisterUserManagementServer(s, userService)
+	pb.RegisterUserManagementServer(s, )
 	log.Printf("server listening at %v", listener.Addr())
 	err = s.Serve(listener)
 	if err != nil {
