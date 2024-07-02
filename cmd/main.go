@@ -14,7 +14,7 @@ import (
 
 func main() {
 	cfg := config.Load()
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.USER_SERVICE_PORT))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.USER_SERVICE_PORT))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,7 +26,7 @@ func main() {
 
 	userService := service.NewUserManagement(db)
 	s := grpc.NewServer()
-	pb.RegisterUserManagementServer(s, )
+	pb.RegisterUserManagementServer(s, userService)
 	log.Printf("server listening at %v", listener.Addr())
 	err = s.Serve(listener)
 	if err != nil {
