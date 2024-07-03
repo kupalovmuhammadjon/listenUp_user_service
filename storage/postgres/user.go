@@ -20,10 +20,16 @@ func (u *UserRepo) GetUserById(userId string) (*pb.User, error) {
 	created_at, updated_at from users where id = $1`
 
 	user := pb.User{Id: userId}
+	updatedAt := sql.NullString{}
 	err := u.Db.QueryRow(query, userId).Scan(
-		&user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+		&user.Username, &user.Email, &user.Password, &user.CreatedAt, &updatedAt)
 	if err != nil {
 		return nil, err
+	}
+	if updatedAt.Valid {
+		user.UpdatedAt = updatedAt.String
+	} else {
+		user.UpdatedAt = ""
 	}
 
 	return &user, nil
