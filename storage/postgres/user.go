@@ -31,6 +31,12 @@ func (u *UserRepo) GetUserById(userId string) (*pb.User, error) {
 }
 
 func (u *UserRepo) UpdateUserProfile(profile *pb.Profile) error {
+	tx, err := u.Db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Commit()
+
 	query := `
 	update
 	    user_profiles 
@@ -45,7 +51,7 @@ func (u *UserRepo) UpdateUserProfile(profile *pb.Profile) error {
 	WHERE 
 	    id = $7;
 `
-	res, err := u.Db.Exec(query, profile.FullName, profile.Bio,
+	res, err := tx.Exec(query, profile.FullName, profile.Bio,
 		profile.Location, profile.AvatarImage, profile.Website)
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
@@ -59,6 +65,12 @@ func (u *UserRepo) UpdateUserProfile(profile *pb.Profile) error {
 }
 
 func (u *UserRepo) UpdateUser(user *pb.User) error {
+	tx, err := u.Db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Commit()
+
 	query := "update users set "
 	params := []interface{}{}
 
@@ -78,7 +90,7 @@ func (u *UserRepo) UpdateUser(user *pb.User) error {
 	query += fmt.Sprintf("where id = $%d", len(params)+1)
 	params = append(params, user.Id)
 
-	_, err := u.Db.Exec(query, params...)
+	_, err = tx.Exec(query, params...)
 	if err != nil {
 		return err
 	}
@@ -87,6 +99,11 @@ func (u *UserRepo) UpdateUser(user *pb.User) error {
 }
 
 func (u *UserRepo) DeleteUser(id string) error {
+	tx, err := u.Db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Commit()
 	query := `
 	update
 	    users (u *UserRepo) 
@@ -95,7 +112,7 @@ func (u *UserRepo) DeleteUser(id string) error {
 	WHERE 
 	    id = $1;
 `
-	res, err := u.Db.Exec(query, id)
+	res, err := tx.Exec(query, id)
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
 		return err
