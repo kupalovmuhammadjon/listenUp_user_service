@@ -52,6 +52,7 @@ func (u *UserManagement) UpdateUserProfile(ctx context.Context, profile *pb.Prof
 	if err != nil {
 		return &pb.Void{}, err
 	}
+
 	return &pb.Void{}, nil
 }
 
