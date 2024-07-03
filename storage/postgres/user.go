@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+	pbAu "user_service/genproto/authentication"
 	pb "user_service/genproto/user"
 )
 
@@ -13,6 +14,20 @@ type UserRepo struct {
 
 func NewUserRepo(db *sql.DB) *UserRepo {
 	return &UserRepo{Db: db}
+}
+
+func (u *UserRepo) Register(user *pbAu.RegisterRequest) error {
+	query := `
+	insert into users(
+		username, email, password
+	) values(
+	 	$1, $2, $3
+	)`
+	_, err := u.Db.Exec(query, user.Username, user.Email, user.Password)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (u *UserRepo) GetUserById(userId string) (*pb.User, error) {

@@ -9,15 +9,3 @@ INSERT INTO users (username, email, password_hash, created_at) VALUES
 ('lisa_taylor', 'lisa.taylor@email.com', 'hashed_password_8', NOW()),
 ('robert_anderson', 'robert.anderson@email.com', 'hashed_password_9', NOW()),
 ('amanda_thomas', 'amanda.thomas@email.com', 'hashed_password_10', NOW());
-
-INSERT INTO user_profiles (full_name, bio, role, location, avatar_image, website) VALUES
-('John Doe', 'Passionate guitarist and songwriter', 'musician', 'New York, NY', NULL, 'www.johndoemusic.com'),
-('Jane Smith', 'Avid music enthusiast and concert-goer', 'listener', 'Los Angeles, CA', NULL, NULL),
-('Mike Johnson', 'Electronic music producer and DJ', 'producer', 'Miami, FL', NULL, 'www.mikejohnsonmusic.com'),
-('Sarah Williams', 'Classical pianist and music teacher', 'musician', 'Boston, MA', NULL, 'www.sarahwilliamspiano.com'),
-('David Brown', 'Hip-hop artist and beatmaker', 'musician', 'Atlanta, GA', NULL, 'www.davidbrownmusic.com'),
-('Emily Davis', 'Indie folk singer-songwriter', 'musician', 'Portland, OR', NULL, 'www.emilydavismusic.com'),
-('Chris Wilson', 'Music blog writer and critic', 'listener', 'Chicago, IL', NULL, 'www.chriswilsonreviews.com'),
-('Lisa Taylor', 'Jazz vocalist and composer', 'musician', 'New Orleans, LA', NULL, 'www.lisataylorjazz.com'),
-('Robert Anderson', 'Record producer and studio owner', 'producer', 'Nashville, TN', NULL, 'www.andersonstudios.com'),
-( 'Amanda Thomas', 'Pop music fan and playlist curator', 'listener', 'Seattle, WA', NULL, NULL);
