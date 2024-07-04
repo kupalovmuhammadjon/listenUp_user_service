@@ -22,3 +22,15 @@ CREATE TABLE user_profiles (
     avatar_image bytea,
     website VARCHAR(255)
 );
+
+CREATE TABLE refresh_tokens (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid() not null,
+    user_id uuid REFERENCES users(id) not null,
+    token text UNIQUE not null,
+    expires_at bigint not null,
+    created_at TIMESTAMP default CURRENT_TIMESTAMP not null,
+    revoked boolean DEFAULT false
+);
+
+CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
+CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);

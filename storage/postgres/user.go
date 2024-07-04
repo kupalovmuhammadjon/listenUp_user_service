@@ -30,6 +30,75 @@ func (u *UserRepo) Register(user *pbAu.RegisterRequest) error {
 	return nil
 }
 
+func (u *UserRepo) StoreRefreshToken(token *pbAu.TokenRequest) error {
+	tx, err := u.Db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Commit()
+
+	query := `
+	insert into refresh_tokens(user_id, token, expires_at)
+	values ($1, $2, $3)
+	`
+	_, err = tx.Exec(query, token.UserId, token.Token, token.ExpiresAt)
+	return err
+}
+
+func (u *UserRepo) ValidateRefreshToken(token string) (string, error) {
+	query := `
+	select
+		user_id, expires_at
+	from
+		refresh_tokens
+	where
+		token = $1
+	`
+
+	userId := ""
+	var expiresAt int64
+	err := u.Db.QueryRow(query, token).Scan(&userId, &expiresAt)
+	if err != nil {
+		return "", err
+	}
+
+	if time.Now().After(time.Unix(expiresAt, 0)) {
+		return "", fmt.Errorf("refresh token expired")
+	}
+	return userId, nil
+}
+
+func (u *UserRepo) DeleteRefreshToken(token string) error {
+	_, err := u.Db.Exec(`	
+		DELETE 
+			FROM 
+				refresh_tokens 
+		WHERE 
+			token = $1
+		`, token)
+	return err
+}
+
+func (u *UserRepo) GetUserByEmail(email string) (*pbAu.LoginResponse, error) {
+	query := `
+	select
+		id,
+		username,
+		password_hash,
+	from
+		users
+	where
+		deleted_at is null
+		and email = $1
+	`
+
+	user := pbAu.LoginResponse{}
+	err := u.Db.QueryRow(query, email).Scan(&user.Id, &user.Username,
+		&user.Password)
+
+	return &user, err
+}
+
 func (u *UserRepo) GetUserById(userId string) (*pb.User, error) {
 	query := `
 	select

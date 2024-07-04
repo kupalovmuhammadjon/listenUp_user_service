@@ -16,6 +16,7 @@ type Config struct {
 	DB_USER           string
 	DB_PASSWORD       string
 	DB_NAME           string
+	SIGNING_KEY       string
 }
 
 func Load() *Config {
@@ -33,6 +34,7 @@ func Load() *Config {
 	config.DB_USER = cast.ToString(coalesce("DB_USER", "postgres"))
 	config.DB_PASSWORD = cast.ToString(coalesce("DB_PASSWORD", "root"))
 	config.DB_NAME = cast.ToString(coalesce("DB_NAME", "user_management"))
+	config.SIGNING_KEY = cast.ToString(coalesce("SIGNING_KEY", "dfghjmhgfd"))
 
 	return config
 }
