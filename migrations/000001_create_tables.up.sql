@@ -22,3 +22,10 @@ CREATE TABLE user_profiles (
     avatar_image bytea,
     website VARCHAR(255)
 );
+
+CREATE TABLE refresh_tokens (
+    id uuid DEFAULT gen_random_uuid(),
+    user_id uuid REFERENCES users(id),
+    token TEXT NOT NULL,
+    expires_at TIMESTAMP NOT NULL
+);
