@@ -26,7 +26,7 @@ func Load() *Config {
 	config := &Config{}
 
 	config.HTTP_PORT = cast.ToInt(coalesce("HTTP_PORT", 8080))
-	config.USER_SERVICE_PORT = cast.ToInt(coalesce("USER_SERVICE_PORT", 8080))
+	config.USER_SERVICE_PORT = cast.ToInt(coalesce("USER_SERVICE_PORT", 7777))
 	config.DB_HOST = cast.ToString(coalesce("DB_HOST", "localhost"))
 	config.DB_PORT = cast.ToString(coalesce("DB_PORT", 5432))
 	config.DB_USER = cast.ToString(coalesce("DB_USER", "postgres"))

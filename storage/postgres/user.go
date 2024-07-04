@@ -139,13 +139,12 @@ func (u *UserRepo) UpdateUserProfile(profile *pb.Profile) error {
    	 	role = $3,
     	location = $4,
     	avatar_image = $5,
-    	website = $6,
-	    updated_at = now(),
+    	website = $6
 	where
-		id = $7;
+		user_id = $7;
 `
-	res, err := u.Db.Exec(query, profile.FullName, profile.Bio,
-		profile.Location, profile.AvatarImage, profile.Website)
+	res, err := u.Db.Exec(query, profile.FullName, profile.Bio, profile.Role, profile.Location,
+		profile.AvatarImage, profile.Website, profile.UserId)
 	if err != nil {
 		return err
 	}	
