@@ -82,59 +82,22 @@ func (h *Handler) Login(ctx *gin.Context) {
 
 func (h *Handler) RefreshToken(ctx *gin.Context) {
 	rft := ctx.PostForm("refresh_token")
-
-	userId, err := h.UserRepo.ValidateRefreshToken(rft)
+	
+	_, err := h.UserRepo.ValidateRefreshToken(rft)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, err)
 		log.Println(err)
 		return
 	}
 
-	req := pbAu.LoginRequest{}
-
-	if err := json.NewDecoder(ctx.Request.Body).Decode(&req); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, err)
-		log.Println(err)
-		return
-	}
-
-	user, err := h.UserRepo.GetUserByEmail(req.Email)
+	newToken, err := token.GenerateAccessToken(rft)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, err)
 		log.Println(err)
 		return
 	}
 
-	tokens := token.GenerateJWT(&pbAu.UserToken{
-		Id:       user.Id,
-		Username: user.Username,
-		Email:    req.Email,
-	})
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, err)
-		log.Println(err)
-		return
-	}
-
-	err = h.UserRepo.DeleteRefreshToken(rft)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, err)
-		log.Println(err)
-		return
-	}
-
-	err = h.UserRepo.StoreRefreshToken(&pbAu.TokenRequest{
-		UserId:    userId,
-		Token:     tokens.RefreshToken,
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-	})
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, err)
-		log.Println(err)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, tokens)
+	ctx.JSON(http.StatusOK, newToken)
 }
 
 func (h *Handler) logout(c *gin.Context) {

@@ -50,6 +50,22 @@ func GenerateJWT(user *pbAu.UserToken) *Tokens {
 	}
 }
 
+func GenerateAccessToken(refreshToken string) (string, error) {
+	accessToken := jwt.New(jwt.SigningMethodHS256)
+
+	claims, err := ExtractClaims(refreshToken)
+	if err != nil {
+		return "", err
+	}
+
+	claims["exp"] = time.Now().Add(time.Hour).Unix()
+
+	accessToken.Claims = claims
+	token, err := accessToken.SignedString([]byte(config.Load().SIGNING_KEY))
+
+	return token, err
+}
+
 func ValidateToken(tokenStr string) (bool, error) {
 	_, err := ExtractClaims(tokenStr)
 	if err != nil {
