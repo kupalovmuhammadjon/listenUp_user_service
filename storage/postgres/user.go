@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+	pbAu "user_service/genproto/authentication"
 	pb "user_service/genproto/user"
 )
 
@@ -13,6 +14,20 @@ type UserRepo struct {
 
 func NewUserRepo(db *sql.DB) *UserRepo {
 	return &UserRepo{Db: db}
+}
+
+func (u *UserRepo) Register(user *pbAu.RegisterRequest) error {
+	query := `
+	insert into users(
+		username, email, password
+	) values(
+	 	$1, $2, $3
+	)`
+	_, err := u.Db.Exec(query, user.Username, user.Email, user.Password)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (u *UserRepo) GetUserById(userId string) (*pb.User, error) {
@@ -42,6 +57,12 @@ func (u *UserRepo) GetUserById(userId string) (*pb.User, error) {
 }
 
 func (u *UserRepo) UpdateUser(user *pb.User) error {
+	tx, err := u.Db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Commit()
+
 	query := "update users set "
 	params := []interface{}{}
 
@@ -61,7 +82,7 @@ func (u *UserRepo) UpdateUser(user *pb.User) error {
 	query += fmt.Sprintf("where deleted_at is null and id = $%d", len(params)+1)
 	params = append(params, user.Id)
 
-	_, err := u.Db.Exec(query, params...)
+	_, err = tx.Exec(query, params...)
 	if err != nil {
 		return err
 	}
@@ -70,6 +91,11 @@ func (u *UserRepo) UpdateUser(user *pb.User) error {
 }
 
 func (u *UserRepo) DeleteUser(id string) error {
+	tx, err := u.Db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Commit()
 	query := `
 	update
 	    users
@@ -79,11 +105,11 @@ func (u *UserRepo) DeleteUser(id string) error {
 		deleted_at is null
 		and id = $1;
 `
-	res, err := u.Db.Exec(query, id)
+
+	res, err := tx.Exec(query, id)
 	if err != nil {
 		return err
 	}
-
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
 		return err
@@ -118,7 +144,7 @@ func (u *UserRepo) GetUserProfile(id string) (*pb.Profile, error) {
 		return nil, err
 	}
 	profile.Website = website.String
-	
+
 	return profile, nil
 }
 
@@ -140,7 +166,7 @@ func (u *UserRepo) UpdateUserProfile(profile *pb.Profile) error {
 		profile.AvatarImage, profile.Website, profile.UserId)
 	if err != nil {
 		return err
-	}	
+	}
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
 		return err
