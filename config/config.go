@@ -21,18 +21,18 @@ type Config struct {
 func Load() *Config {
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatalf("Error loading .env file: %v", err)
 	}
 
 	config := &Config{}
 
 	config.HTTP_PORT = cast.ToInt(coalesce("HTTP_PORT", 8080))
-	config.USER_SERVICE_PORT = cast.ToInt(coalesce("USER_SERVICE_PORT", 8080))
+	config.USER_SERVICE_PORT = cast.ToInt(coalesce("USER_SERVICE_PORT", 7777))
 	config.DB_HOST = cast.ToString(coalesce("DB_HOST", "localhost"))
 	config.DB_PORT = cast.ToString(coalesce("DB_PORT", 5432))
 	config.DB_USER = cast.ToString(coalesce("DB_USER", "postgres"))
 	config.DB_PASSWORD = cast.ToString(coalesce("DB_PASSWORD", "root"))
-	config.DB_NAME = cast.ToString(coalesce("DB_NAME", "back_up"))
+	config.DB_NAME = cast.ToString(coalesce("DB_NAME", "user_management"))
 
 	return config
 }

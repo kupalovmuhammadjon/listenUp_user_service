@@ -14,7 +14,7 @@ import (
 
 func main() {
 	cfg := config.Load()
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.USER_SERVICE_PORT))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.USER_SERVICE_PORT))
 	if err != nil {
 		log.Fatal(err)
 	}
