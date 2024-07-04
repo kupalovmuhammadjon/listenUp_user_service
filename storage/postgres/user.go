@@ -36,11 +36,7 @@ func (u *UserRepo) GetUserById(userId string) (*pb.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	if updatedAt.Valid {
-		user.UpdatedAt = updatedAt.String
-	} else {
-		user.UpdatedAt = ""
-	}
+	user.UpdatedAt = updatedAt.String
 
 	return &user, nil
 }
@@ -120,11 +116,7 @@ func (u *UserRepo) GetUserProfile(id string) (*pb.Profile, error) {
 	if err != nil {
 		return nil, err
 	}
-	if website.Valid {
-		profile.Website = website.String
-	  } else {
-		profile.Website = ""
-	  }
+	profile.Website = website.String
 	
 	return profile, nil
 }
