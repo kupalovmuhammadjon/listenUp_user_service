@@ -9,8 +9,8 @@ import (
 )
 
 type Config struct {
-	HTTP_PORT         int
-	USER_SERVICE_PORT int
+	HTTP_PORT         string
+	USER_SERVICE_PORT string
 	DB_HOST           string
 	DB_PORT           string
 	DB_USER           string
@@ -27,8 +27,8 @@ func Load() *Config {
 
 	config := &Config{}
 
-	config.HTTP_PORT = cast.ToInt(coalesce("HTTP_PORT", 8080))
-	config.USER_SERVICE_PORT = cast.ToInt(coalesce("USER_SERVICE_PORT", 7777))
+	config.HTTP_PORT = cast.ToString(coalesce("HTTP_PORT", 8080))
+	config.USER_SERVICE_PORT = cast.ToString(coalesce("USER_SERVICE_PORT", 7777))
 	config.DB_HOST = cast.ToString(coalesce("DB_HOST", "localhost"))
 	config.DB_PORT = cast.ToString(coalesce("DB_PORT", 5432))
 	config.DB_USER = cast.ToString(coalesce("DB_USER", "postgres"))

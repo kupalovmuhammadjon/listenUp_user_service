@@ -1,12 +1,16 @@
 package api
 
 import (
+	"database/sql"
 	"user_service/api/handler"
 
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(h *handler.Handler) *gin.Engine {
+func NewRouter(db *sql.DB) *gin.Engine {
+
+	h := handler.NewHandler(db)
+
 	router := gin.Default()
 
 	users := router.Group("/users")
