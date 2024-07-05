@@ -1,3 +1,4 @@
+
 INSERT INTO users (id, username, email, password_hash, created_at) VALUES
 ('c4c8d9e1-0f0b-4b90-b5e3-3f3e2b9a81e1', 'johndoe', 'john.doe@email.com', 'hashed_password_1', NOW()),
 ('2f15c0f5-6c44-4a23-85a6-7fbb217a628f', 'jane_smith', 'jane.smith@email.com', 'hashed_password_2', NOW()),
