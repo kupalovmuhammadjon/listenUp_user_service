@@ -246,3 +246,23 @@ func (u *UserRepo) UpdateUserProfile(profile *pb.Profile) error {
 
 	return nil
 }
+
+func (u *UserRepo) ValidateUserId(id string) (*pb.Success, error) {
+	query := `
+		select
+			case 
+				when id = $1 then true
+			else
+				false
+			end
+		from
+			users
+		where
+		    deleted_at is null
+	`
+
+	res := pb.Success{}
+	err := u.Db.QueryRow(query, id).Scan(&res.Success)
+
+	return &res, err
+}

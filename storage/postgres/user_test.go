@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"database/sql"
 	"log"
 	"reflect"
 	"testing"
@@ -88,5 +89,15 @@ func TestUpdateUserProfile(t *testing.T) {
 	})
 	if err != nil {
 		t.Errorf("error while updating user profile: %v", err)
+	}
+}
+
+func TestValidateUserId(t *testing.T) {
+	id := "65592165-c1e2-4cac-9c02-7546b34a8d27"
+
+	u := DB()
+	_, err := u.ValidateUserId(id)
+	if err != nil || err == sql.ErrNoRows {
+		t.Error(err)
 	}
 }

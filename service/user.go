@@ -73,3 +73,12 @@ func (u *UserManagement) DeleteUser(ctx context.Context, req *pb.ID) (*pb.Void, 
 
 	return &pb.Void{}, nil
 }
+
+func (u *UserManagement) ValidateUserId(ctx context.Context, req *pb.ID) (*pb.Success, error) {
+	resp, err := u.Users.ValidateUserId(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
