@@ -262,7 +262,7 @@ func (u *UserRepo) ValidateUserId(id string) (*pb.Success, error) {
 	`
 
 	res := pb.Success{}
-	err := u.Db.QueryRow(query, id, id).Scan(&res.Success)
+	err := u.Db.QueryRow(query, id).Scan(&res.Success)
 
 	return &res, err
 }
