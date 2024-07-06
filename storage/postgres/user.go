@@ -19,7 +19,7 @@ func NewUserRepo(db *sql.DB) *UserRepo {
 func (u *UserRepo) Register(user *pbAu.RegisterRequest) error {
 	query := `
 	insert into users(
-		username, email, password
+		username, email, password_hash
 	) values(
 	 	$1, $2, $3
 	)`
@@ -84,7 +84,7 @@ func (u *UserRepo) GetUserByEmail(email string) (*pbAu.LoginResponse, error) {
 	select
 		id,
 		username,
-		password_hash,
+		password_hash
 	from
 		users
 	where
@@ -145,6 +145,7 @@ func (u *UserRepo) UpdateUser(user *pb.User) error {
 	}
 	if user.Password != "" {
 		query += fmt.Sprintf("password_hash = $%d, ", len(params)+1)
+		params = append(params, user.Password)
 	}
 	query += fmt.Sprintf("updated_at = $%d ", len(params)+1)
 	params = append(params, time.Now())
@@ -258,11 +259,10 @@ func (u *UserRepo) ValidateUserId(id string) (*pb.Success, error) {
 		from
 			users
 		where
-		    deleted_at is null
+		    id = $1 and deleted_at is null
 	`
 
 	res := pb.Success{}
 	err := u.Db.QueryRow(query, id).Scan(&res.Success)
-
 	return &res, err
 }

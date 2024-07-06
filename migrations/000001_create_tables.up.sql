@@ -21,6 +21,9 @@ CREATE TABLE user_profiles (
     location VARCHAR(100),
     avatar_image bytea,
     website VARCHAR(255)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE refresh_tokens (

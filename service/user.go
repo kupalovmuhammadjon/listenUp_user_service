@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	pb "user_service/genproto/user"
 	"user_service/storage/postgres"
 )
@@ -19,27 +18,15 @@ func NewUserManagement(db *sql.DB) *UserManagement {
 }
 
 func (u *UserManagement) GetUserByID(ctx context.Context, req *pb.ID) (*pb.User, error) {
-	if len(req.Id) != 32 {
-		return nil, fmt.Errorf("id is not valid")
-	}
 	user, err := u.Users.GetUserById(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.User{
-		Id:        user.Id,
-		Username:  user.Username,
-		Email:     user.Email,
-		Password:  user.Password,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
-	}, nil
+	return user, nil
 }
 
 func (u *UserManagement) GetUserProfile(ctx context.Context, req *pb.ID) (*pb.Profile, error) {
-	if len(req.Id) != 32 {
-		return nil, fmt.Errorf("id is not valid")
-	}
+
 	userProfile, err := u.Users.GetUserProfile(req.Id)
 	if err != nil {
 		return nil, err

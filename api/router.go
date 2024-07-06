@@ -3,7 +3,6 @@ package api
 import (
 	"database/sql"
 	"user_service/api/handler"
-	"user_service/api/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,8 +13,7 @@ func NewRouter(db *sql.DB) *gin.Engine {
 
 	router := gin.Default()
 
-	router.Use(middleware.JWTMiddleware())
-	
+	// router.Use(middleware.JWTMiddleware())
 	users := router.Group("/users")
 	users.POST("/register", h.Register)
 	users.POST("/login", h.Login)
